@@ -1,7 +1,16 @@
+
+import { Form } from '@/components/uiParts/Form';
+import { Header } from '@/components/uiParts/Header';
+
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
-  return <div>Hello Next.js!</div>;
+  return (
+    <>
+      <Header />
+      <Form />
+    </>
+  );
 };
 
 export default Home;

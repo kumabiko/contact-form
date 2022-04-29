@@ -25,16 +25,17 @@
     "sort-imports": 0,
     "no-unused-vars": "warn",
     "import/order": [
-      "error",
+      "warn",
       {
         "groups": [
           "builtin",
           "external",
           "internal",
-          ["parent", "sibling"],
+          "parent",
+          "sibling",
+          "index",
           "object",
-          "type",
-          "index"
+          "type"
         ],
         "newlines-between": "always",
         "pathGroupsExcludedImportTypes": ["builtin"],

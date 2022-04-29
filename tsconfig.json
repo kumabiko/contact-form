@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".", //プロジェクト内の import パスを絶対パスで書く
+    "paths": {
+      "@/*": ["./src/*"] // エイリアスの設定　./src/components を @/components と書くことができるよう
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

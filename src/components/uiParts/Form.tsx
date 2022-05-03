@@ -146,7 +146,7 @@ export const Form = () => {
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 placeholder="郵便番号"
-                {...register('zipCode', { required: true })}
+                {...register('zipCode')}
               />
             </div>
 
@@ -162,7 +162,7 @@ export const Form = () => {
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 placeholder="都道府県"
-                {...register('prefecture', { required: true })}
+                {...register('prefecture')}
               />
             </div>
 
@@ -176,7 +176,7 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('municipality', { required: true })}
+                {...register('municipality')}
               />
             </div>
 
@@ -190,7 +190,7 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('houseNumber', { required: true })}
+                {...register('houseNumber')}
               />
             </div>
 
@@ -204,7 +204,7 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('buildingNameAndRoomNumber', { required: true })}
+                {...register('buildingNameAndRoomNumber')}
               />
             </div>
 
@@ -221,12 +221,12 @@ export const Form = () => {
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 placeholder="電話番号"
                 pattern="\d{2,4}-?\d{2,4}-?\d{3,4}"
-                {...register('phoneNumber', { required: true })}
+                {...register('phoneNumber')}
               />
             </div>
 
             {/* どの製品について start */}
-            <div className="mb-6 w-full md:mb-0 md:w-1/2 ">
+            <div className="mb-6 w-full sm:col-span-2 md:mb-0 md:w-1/2  ">
               <label
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
                 htmlFor="product"
@@ -292,15 +292,21 @@ export const Form = () => {
               </label>
             </div>
 
-            <div className="flex justify-center items-center sm:col-span-2">
+            <div className="flex justify-center sm:col-span-2">
               {!isValid && (
                 <>
-                  <p className="form-validateMessage">
+                  <p className="text-sm font-bold text-red-600">
                     まだ全ての必須項目の入力が完了していません。
                   </p>
                 </>
               )}
-              <button className="inline-block py-3 px-8 text-sm font-semibold text-center text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-lg outline-none focus-visible:ring ring-red-300 transition duration-100 md:text-base">
+            </div>
+
+            <div className="flex justify-center items-center sm:col-span-2">
+              <button
+                disabled={!isValid}
+                className="inline-block py-3 px-8 text-sm font-semibold text-center text-white bg-red-500 hover:bg-red-600 active:bg-red-700 disabled:bg-gray-300 rounded-lg outline-none focus-visible:ring ring-red-300 transition duration-100 md:text-base"
+              >
                 確認
               </button>
             </div>

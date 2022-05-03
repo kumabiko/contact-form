@@ -7,8 +7,6 @@ import { Header } from '@/components/uiParts/Header';
 
 import type { NextPage } from 'next';
 
-//react-hook-form
-
 const Home: NextPage = () => {
   // パラメータを取得
   const router = useRouter();

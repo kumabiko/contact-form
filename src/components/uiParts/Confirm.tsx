@@ -33,11 +33,11 @@ export const Confirm = () => {
     <>
       {/*  eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+        <div className="overflow-hidden bg-white">
           <div className="flex justify-center items-center py-5 px-4 mt-6 sm:col-span-2 sm:px-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">入力確認</h3>
           </div>
-          <div className="border-t border-gray-200">
+          <div className="px-4 mx-auto max-w-screen-md md:px-8">
             <dl>
               {/* 行 start */}
               <div className="py-5 px-4 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

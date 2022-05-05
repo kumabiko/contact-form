@@ -8,8 +8,8 @@ export type FormInput = {
   email: string; // メールアドレス*
   zipCode: string; // 郵便番号
   prefecture: string; // 都道府県
-  municipality: string; // 市区村町
-  houseNumber: string; // 番地
+  address1: string; // 市区村町
+  address2: string; // 番地
   buildingNameAndRoomNumber: string; // 建物名・部屋番号
   phoneNumber: string; // 電話番号
   product: 'Aサービスについて' | 'Bサービスについて' | 'Cサービスについて' | 'その他'; // どの製品について

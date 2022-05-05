@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Header } from '@/components/uiParts/Header';
 
+// 完了画面
 const Complete = () => {
   //直アクセスの場合は何かしらのフラグ管理をして、リダイレクト処理をする想定
   return (

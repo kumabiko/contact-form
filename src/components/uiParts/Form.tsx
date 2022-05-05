@@ -1,9 +1,10 @@
 //エラーメッセージコンポーネント
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { usePostalJp } from 'use-postal-jp';
 // react-hook-formから、useFormContextとSubmitHandlerをimport
 // SubmitHandlerは、submitイベントに関する関数の型宣言に使う
-import { SubmitHandler, useFormContext } from 'react-hook-form';
 
 import { FormInput } from '@/types/contact';
 
@@ -11,12 +12,18 @@ export const Form = () => {
   const [isChecked, setIdChecked] = useState(false);
   const router = useRouter();
 
-  // useFormフックを使い、registerとhandleSubmitを取得する。
+  // 郵便番号を住所に変換するカスタムフック
+  // https://github.com/aiji42/use-postal-jp
+  const [zipCode, setZipCode] = useState('');
+  const [address, loading, error] = usePostalJp(zipCode, zipCode.length >= 7);
+
+  // useFormContextフックを使い、registerとhandleSubmitを取得する。
   // registerは、フォームのフィールドを登録することで、バリデーションを機能させる。
   // handleSubmitは、submitイベントの制御に関わる。
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useFormContext<FormInput>();
 
@@ -25,10 +32,17 @@ export const Form = () => {
     await router.push(`/?confirm=1`);
   };
 
+  // addressが取得出来た際に、住所以降を自動入力する
+  useEffect(() => {
+    if (address) {
+      setValue('prefecture', address.prefecture);
+      setValue('address1', address.address1);
+      setValue('address2', address.address2);
+    }
+  }, [address, setValue]);
+
   const handleChange = () => {
     setIdChecked(!isChecked);
-    console.log(isChecked);
-    console.log('isChecked');
   };
 
   return (
@@ -95,11 +109,12 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                pattern="[\u3041-\u3096]*"
-                {...register('kanaFamilyName', { required: true })}
+                {...register('kanaFamilyName', { required: true, pattern: /^[\u3040-\u309F]+$/ })}
               />
               {errors.kanaFamilyName && (
-                <p className="my-2 text-sm  font-bold text-red-600">ふりがな(姓)は必須項目です。</p>
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  ふりがな(姓)を正しく入力してください。
+                </p>
               )}
             </div>
 
@@ -115,7 +130,9 @@ export const Form = () => {
                 {...register('kanaGivenName', { required: true })}
               />
               {errors.kanaGivenName && (
-                <p className="my-2 text-sm  font-bold text-red-600">ふりがな(名)は必須項目です。</p>
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  ふりがな(名)を正しく入力してください。
+                </p>
               )}
             </div>
 
@@ -153,8 +170,7 @@ export const Form = () => {
               )}
             </div>
 
-            {/* 郵便番号 */}
-            <div className="sm:col-span-2 md:w-1/2">
+            <div className="sm:col-span-2 md:w-1/4">
               <label
                 htmlFor="zipCode"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
@@ -168,6 +184,7 @@ export const Form = () => {
                 {...register('zipCode', {
                   pattern: /^[0-9]{3}-[0-9]{4}$/,
                 })}
+                onChange={(e) => setZipCode(e.target.value)}
               />
               {errors.zipCode && (
                 <p className="my-2 text-sm font-bold text-red-600">
@@ -194,28 +211,28 @@ export const Form = () => {
             {/* 市町村区 start */}
             <div className="sm:col-span-2">
               <label
-                htmlFor="municipality"
+                htmlFor="address1"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
                 市区村町
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('municipality')}
+                {...register('address1')}
               />
             </div>
 
             {/* 番地 start */}
             <div className="sm:col-span-2">
               <label
-                htmlFor="houseNumber"
+                htmlFor="address2"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
                 番地
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('houseNumber')}
+                {...register('address2')}
               />
             </div>
 

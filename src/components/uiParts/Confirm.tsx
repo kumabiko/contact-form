@@ -89,7 +89,7 @@ export const Confirm = () => {
               <div className="py-5 px-4 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">市区村町</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {values.municipality}
+                  {values.address1}
                 </dd>
               </div>
               {/* 行 end */}
@@ -97,7 +97,7 @@ export const Confirm = () => {
               <div className="py-5 px-4 bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">番地</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                  {values.houseNumber}
+                  {values.address2}
                 </dd>
               </div>
               {/* 行 end */}

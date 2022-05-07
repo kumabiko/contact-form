@@ -1,34 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# contact-form
 
-## Getting Started
+- コーポレートサイトのお問い合わせフォーム
 
-First, run the development server:
+# DEMO
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+- 入力画面
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 確認画面
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- 完了画面
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+# Features(こだわりポイント)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- フロントエンドの技術選定として、採用される事が多い`Next.js`と`Tailwind CSS`を使って実装しました。
+- バリデーションには`React-hook-form`というライブラリを使っています。
+- 郵便番号を入力した際に、住所以降が自動入力される様になります。
+  - 幾つかライブラリを検討した結果、シンプルでカスタムフックとして使いやすい[use-postal-jp](https://github.com/aiji42/use-postal-jp)を使っています。
+  - React-hook-form との兼ね合いで、実装に悩みましたが、useEffect を使って setValue する事で解決しました。(自動入力しても、確認画面で値が set されていないという問題)
 
-## Learn More
+# Note
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- 完了画面のブラウザのデバッグコンソールで送信データが確認できます。

@@ -1,29 +1,48 @@
-import { ErrorMessage } from '@hookform/error-message'; //エラーメッセージコンポーネント
+//エラーメッセージコンポーネント
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useFormContext } from 'react-hook-form';
+import { usePostalJp } from 'use-postal-jp';
 // react-hook-formから、useFormContextとSubmitHandlerをimport
 // SubmitHandlerは、submitイベントに関する関数の型宣言に使う
-import { SubmitHandler, useFormContext } from 'react-hook-form';
 
 import { FormInput } from '@/types/contact';
 
 export const Form = () => {
+  const [isChecked, setIdChecked] = useState(false);
   const router = useRouter();
 
-  // useFormフックを使い、registerとhandleSubmitを取得する。
+  // 郵便番号を住所に変換するカスタムフック
+  // https://github.com/aiji42/use-postal-jp
+  const [zipCode, setZipCode] = useState('');
+  const [address, loading, error] = usePostalJp(zipCode, zipCode.length >= 7);
+
+  // useFormContextフックを使い、registerとhandleSubmitを取得する。
   // registerは、フォームのフィールドを登録することで、バリデーションを機能させる。
   // handleSubmitは、submitイベントの制御に関わる。
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useFormContext<FormInput>();
 
   // submitイベントが発生して、かつバリデーションが成功した場合に実行する関数。
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    console.log(data);
-
     await router.push(`/?confirm=1`);
+  };
+
+  // addressが取得出来た際に、住所以降を自動入力する
+  useEffect(() => {
+    if (address) {
+      setValue('prefecture', address.prefecture);
+      setValue('address1', address.address1);
+      setValue('address2', address.address2);
+    }
+  }, [address, setValue]);
+
+  const handleChange = () => {
+    setIdChecked(!isChecked);
   };
 
   return (
@@ -48,24 +67,21 @@ export const Form = () => {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={handleSubmit(onSubmit)}
           >
+            {/* 名前(姓)* */}
             <div>
               <label
                 htmlFor="firstName"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                名前(姓)*
+                名前(姓)<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('familyName', { required: 'お名前は必須項目です。' })}
+                {...register('familyName', { required: true })}
               />
-              <ErrorMessage
-                errors={errors}
-                name="name"
-                render={({ message }) =>
-                  message ? <p className="form-validateMessage">{message}</p> : null
-                }
-              />
+              {errors.familyName && (
+                <p className="my-2 text-sm  font-bold text-red-600">名前(姓)は必須項目です。</p>
+              )}
             </div>
 
             <div>
@@ -73,12 +89,15 @@ export const Form = () => {
                 htmlFor="lastName"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                名前(名)*
+                名前(名)<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 {...register('givenName', { required: true })}
               />
+              {errors.givenName && (
+                <p className="my-2 text-sm  font-bold text-red-600">名前(名)は必須項目です。</p>
+              )}
             </div>
 
             <div>
@@ -86,13 +105,17 @@ export const Form = () => {
                 htmlFor="kanaFamilyName"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                ふりがな(姓)*
+                ふりがな(姓)<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                pattern="[\u3041-\u3096]*"
-                {...register('kanaFamilyName', { required: true })}
+                {...register('kanaFamilyName', { required: true, pattern: /^[\u3040-\u309F]+$/ })}
               />
+              {errors.kanaFamilyName && (
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  ふりがな(姓)を正しく入力してください。
+                </p>
+              )}
             </div>
 
             <div>
@@ -100,12 +123,17 @@ export const Form = () => {
                 htmlFor="kanaGivenName"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                ふりがな(名)*
+                ふりがな(名)<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 {...register('kanaGivenName', { required: true })}
               />
+              {errors.kanaGivenName && (
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  ふりがな(名)を正しく入力してください。
+                </p>
+              )}
             </div>
 
             <div className="sm:col-span-2">
@@ -126,16 +154,23 @@ export const Form = () => {
                 htmlFor="email"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                メールアドレス*
+                メールアドレス<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('email', { required: true })}
+                {...register('email', {
+                  required: true,
+                  pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                })}
               />
+              {errors.email && (
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  メールアドレスを正しく入力して下さい。
+                </p>
+              )}
             </div>
 
-            {/* 郵便番号 */}
-            <div className="sm:col-span-2 md:w-1/2">
+            <div className="sm:col-span-2 md:w-1/4">
               <label
                 htmlFor="zipCode"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
@@ -145,9 +180,17 @@ export const Form = () => {
               <input
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                placeholder="郵便番号"
-                {...register('zipCode', { required: true })}
+                placeholder="000-0000"
+                {...register('zipCode', {
+                  pattern: /^[0-9]{3}-[0-9]{4}$/,
+                })}
+                onChange={(e) => setZipCode(e.target.value)}
               />
+              {errors.zipCode && (
+                <p className="my-2 text-sm font-bold text-red-600">
+                  郵便番号を正しく入力して下さい。
+                </p>
+              )}
             </div>
 
             {/* 住所 */}
@@ -161,36 +204,35 @@ export const Form = () => {
               <input
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                placeholder="都道府県"
-                {...register('prefecture', { required: true })}
+                {...register('prefecture')}
               />
             </div>
 
             {/* 市町村区 start */}
             <div className="sm:col-span-2">
               <label
-                htmlFor="municipality"
+                htmlFor="address1"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
                 市区村町
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('municipality', { required: true })}
+                {...register('address1')}
               />
             </div>
 
             {/* 番地 start */}
             <div className="sm:col-span-2">
               <label
-                htmlFor="houseNumber"
+                htmlFor="address2"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
                 番地
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('houseNumber', { required: true })}
+                {...register('address2')}
               />
             </div>
 
@@ -204,7 +246,7 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('buildingNameAndRoomNumber', { required: true })}
+                {...register('buildingNameAndRoomNumber')}
               />
             </div>
 
@@ -217,16 +259,24 @@ export const Form = () => {
                 電話番号
               </label>
               <input
+                placeholder="(例) 000-0000-0000"
                 type="tel"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                placeholder="電話番号"
                 pattern="\d{2,4}-?\d{2,4}-?\d{3,4}"
-                {...register('phoneNumber', { required: true })}
+                {...register('phoneNumber', {
+                  pattern: /^0\d{1,3}-\d{2,4}-\d{3,4}$/,
+                })}
               />
+              {errors.phoneNumber && (
+                <p className="my-2 text-sm font-bold text-red-600">
+                  電話番号を正しく入力して下さい。
+                  <br />
+                </p>
+              )}
             </div>
 
             {/* どの製品について start */}
-            <div className="mb-6 w-full md:mb-0 md:w-1/2 ">
+            <div className="mb-6 w-full sm:col-span-2 md:mb-0 md:w-1/2  ">
               <label
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
                 htmlFor="product"
@@ -264,12 +314,17 @@ export const Form = () => {
                 htmlFor="subject"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                問い合わせ件名*
+                問い合わせ件名<span className="text-red-600">*</span>
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 {...register('subject', { required: true })}
               />
+              {errors.subject && (
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  問い合わせ件名は必須項目です。
+                </p>
+              )}
             </div>
             {/* 問い合わせ内容 start */}
             <div className="sm:col-span-2">
@@ -277,30 +332,41 @@ export const Form = () => {
                 htmlFor="message"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                問い合わせ内容*
+                問い合わせ内容<span className="text-red-600">*</span>
               </label>
               <textarea
                 className="py-2 px-3 w-full h-64 text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 {...register('message', { required: true })}
               ></textarea>
+              {errors.message && (
+                <p className="my-2 text-sm  font-bold text-red-600">
+                  問い合わせ内容は必須項目です。
+                </p>
+              )}
             </div>
 
             <div className="mb-6 md:flex md:items-center">
               <label className="block font-bold text-gray-500">
-                <input className="mr-2 leading-tight" type="checkbox" />
+                <input className="mr-2 leading-tight" type="checkbox" onChange={handleChange} />
                 <span className="text-sm">個人情報の取り扱いに同意します。</span>
               </label>
             </div>
 
-            <div className="flex justify-center items-center sm:col-span-2">
+            <div className="flex justify-center sm:col-span-2">
               {!isValid && (
                 <>
-                  <p className="form-validateMessage">
+                  <p className="text-sm font-bold text-red-600">
                     まだ全ての必須項目の入力が完了していません。
                   </p>
                 </>
               )}
-              <button className="inline-block py-3 px-8 text-sm font-semibold text-center text-white bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-lg outline-none focus-visible:ring ring-red-300 transition duration-100 md:text-base">
+            </div>
+
+            <div className="flex justify-center items-center sm:col-span-2">
+              <button
+                disabled={!isValid || !isChecked}
+                className="inline-block py-3 px-8 text-sm font-semibold text-center text-white bg-red-500 hover:bg-red-600 active:bg-red-700 disabled:bg-gray-300 rounded-lg outline-none focus-visible:ring ring-red-300 transition duration-100 md:text-base"
+              >
                 確認
               </button>
             </div>

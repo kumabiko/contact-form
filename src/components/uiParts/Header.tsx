@@ -33,7 +33,7 @@ export const Header = () => {
             <img
               src="https://source.unsplash.com/VrAl7hRVX4A"
               loading="lazy"
-              alt="Photo by Fakurian Design"
+              alt="HeroImage"
               className="object-cover object-center absolute inset-0 w-full h-full"
             />
             {/* image - end  */}

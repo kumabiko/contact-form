@@ -4,7 +4,7 @@
 
 # DEMO
 
-contact-form-inky.vercel.app
+https://contact-form-inky.vercel.app/
 
 - 入力画面
 
@@ -32,4 +32,4 @@ contact-form-inky.vercel.app
 - バリデーションには[React-hook-form](https://react-hook-form.com/jp/)を使用しました。
 - 郵便番号を入力した際に、住所以降が自動入力される様になります。
   - 幾つかライブラリを検討した結果、シンプルでカスタムフックとして使いやすい[use-postal-jp](https://github.com/aiji42/use-postal-jp)を使っています。
-  - React-hook-form との兼ね合いで、自動入力しても値が set されていないという問題があり、悩みましたが、useEffect を使って setValue する事で解決しました。
+  - React-hook-form との兼ね合いで、自動入力しても値が set されていないという問題があり、実装に悩みましたが、useEffect を使って郵便番号から住所が取得出来たタイミングでsetValueする事で解決しました。

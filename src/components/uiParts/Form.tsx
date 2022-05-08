@@ -127,7 +127,7 @@ export const Form = () => {
               </label>
               <input
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                {...register('kanaGivenName', { required: true })}
+                {...register('kanaGivenName', { required: true, pattern: /^[\u3040-\u309F]+$/ })}
               />
               {errors.kanaGivenName && (
                 <p className="my-2 text-sm  font-bold text-red-600">
@@ -175,14 +175,14 @@ export const Form = () => {
                 htmlFor="zipCode"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                郵便番号
+                郵便番号(ハイフン任意)
               </label>
               <input
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 placeholder="000-0000"
                 {...register('zipCode', {
-                  pattern: /^[0-9]{3}-[0-9]{4}$/,
+                  pattern: /^[0-9]{3}-?[0-9]{4}$/,
                 })}
                 onChange={(e) => setZipCode(e.target.value)}
               />
@@ -256,15 +256,14 @@ export const Form = () => {
                 htmlFor="phoneNumber"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                電話番号
+                電話番号(ハイフン無し9桁)
               </label>
               <input
                 placeholder="(例) 000-0000-0000"
                 type="tel"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                pattern="\d{2,4}-?\d{2,4}-?\d{3,4}"
                 {...register('phoneNumber', {
-                  pattern: /^0\d{1,3}-\d{2,4}-\d{3,4}$/,
+                  pattern: /^(0{1}\d{9,10})$/,
                 })}
               />
               {errors.phoneNumber && (

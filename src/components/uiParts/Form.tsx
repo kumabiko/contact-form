@@ -255,7 +255,7 @@ export const Form = () => {
                 htmlFor="phoneNumber"
                 className="inline-block mb-2 text-sm text-gray-800 sm:text-base"
               >
-                電話番号(ハイフン無し9桁)
+                電話番号(ハイフン無し)
               </label>
               <input
                 type="tel"

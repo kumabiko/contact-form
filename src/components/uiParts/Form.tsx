@@ -180,7 +180,6 @@ export const Form = () => {
               <input
                 type="text"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
-                placeholder="000-0000"
                 {...register('zipCode', {
                   pattern: /^[0-9]{3}-?[0-9]{4}$/,
                 })}
@@ -259,7 +258,6 @@ export const Form = () => {
                 電話番号(ハイフン無し9桁)
               </label>
               <input
-                placeholder="(例) 000-0000-0000"
                 type="tel"
                 className="py-2 px-3 w-full text-gray-800 bg-gray-50 focus:bg-white rounded border"
                 {...register('phoneNumber', {
